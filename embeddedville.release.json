@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "project": {"id": "embeddedville-tinyml-magic-wand-workspace", "kind": "course-source", "courseIds": ["tinyml-magic-wand"]},
+  "repository": {"expectedRemote": "https://github.com/ShuranXu/embeddedville-tinyml-magic-wand-workspace.git", "defaultBranch": "main", "immutableReleaseTagsRequired": true},
+  "source": {"protectedPaths": ["starter", "recorder", "simulator", "training", "scripts", "lab", ".embeddedville-workspace.json", ".devcontainer"], "baselineTag": "1.2.0"},
+  "validation": {"commands": ["python3 tests/validate_workspace.py", "python3 -m unittest discover -s tests -v", "./scripts/readiness.sh"]},
+  "deployment": {"managedBy": "embeddedville-learn-v2", "workflow": null, "productionRef": null}
+}

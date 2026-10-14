@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EmbeddedVille Virtual Wand</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lab-context.css">
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <div><p>EmbeddedVille · TinyML Magic Wand</p><h1>Virtual Wand</h1><p>Draw or replay a gesture, inspect the exact 32×32×3 raster, and execute your full-int8 model in the browser.</p></div>
+      <aside><strong>Course runtime</strong><span>This hosted virtual device is the required learner path. A physical board is optional and supports only additional IMU, BLE, timing, memory, and power claims.</span></aside>
+    </header>
+
+    <section id="lab-context" class="lab-context" hidden>
+      <span>HOSTED LAB MODE</span>
+      <div><h2 id="lab-context-title"></h2><p id="lab-context-body"></p></div>
+    </section>
+
+    <section class="toolbar" aria-label="Simulator files and controls">
+      <label class="file">Load .tflite<input id="model-file" type="file" accept=".tflite,application/octet-stream"></label>
+      <label class="file">Load metrics.json<input id="metrics-file" type="file" accept="application/json,.json"></label>
+      <label class="file">Load dataset<input id="dataset-file" type="file" accept="application/json,.json"></label>
+      <button id="default-model" type="button">Restore course model</button>
+      <button id="download-report" class="secondary" type="button">Download report</button>
+    </section>
+    <p id="status" role="status">Loading the pinned course model and TensorFlow Lite WebAssembly runtime…</p>
+
+    <section class="contract" aria-label="Model contract">
+      <div><span>MODEL</span><strong id="model-name">Loading…</strong><small id="model-hash">SHA-256 pending</small></div>
+      <div><span>INPUT</span><strong id="input-contract">—</strong><small id="input-quantization">—</small></div>
+      <div><span>OUTPUT</span><strong id="output-contract">—</strong><small id="output-quantization">—</small></div>
+      <div><span>OPERATORS</span><strong id="operators">Awaiting metrics</strong><small>Conv2D · Mean · FullyConnected · Softmax</small></div>
+    </section>
+
+    <section class="workspace">
+      <article class="panel draw-panel">
+        <div class="panel-title"><div><span>01 · INPUT</span><h2>Draw or replay</h2></div><button id="clear" class="quiet" type="button">Clear</button></div>
+        <canvas id="stroke" width="512" height="512" aria-label="Draw a wand gesture"></canvas>
+        <div class="examples"><button data-example="wing">Wing</button><button data-example="ring">Ring</button><button data-example="slope">Slope</button><button data-example="unknown">Unknown</button></div>
+        <div class="dataset-controls">
+          <label>Dataset stroke<select id="stroke-select" disabled><option>No dataset loaded</option></select></label>
+          <button id="run-dataset" type="button" disabled>Run untouched test split</button>
+        </div>
+      </article>
+
+      <article class="panel raster-panel">
+        <div class="panel-title"><div><span>02 · PREPROCESS</span><h2>Firmware-aligned raster</h2></div><strong id="point-count">0 points</strong></div>
+        <canvas id="raster" width="32" height="32" aria-label="32 by 32 gesture raster"></canvas>
+        <dl><div><dt>Shape</dt><dd>1 × 32 × 32 × 3</dd></div><div><dt>Pixel range</dt><dd id="pixel-range">0…0</dd></div><div><dt>Input int8</dt><dd id="tensor-range">−128…−128</dd></div></dl>
+      </article>
+
+      <article class="panel result-panel">
+        <div class="panel-title"><div><span>03 · INFERENCE</span><h2>Quantized scores</h2></div><button id="run-one" type="button" disabled>Run model</button></div>
+        <div id="decision" class="decision"><span>Prediction</span><strong>Awaiting gesture</strong><small>Load a model and draw at least two points.</small></div>
+        <div id="scores" class="scores"></div>
+        <div class="thresholds">
+          <label>Minimum confidence <output id="confidence-value">0.65</output><input id="confidence" type="range" min="0" max="1" value="0.65" step="0.01"></label>
+          <label>Minimum margin <output id="margin-value">0.15</output><input id="margin" type="range" min="0" max="1" value="0.15" step="0.01"></label>
+          <label>Actual label<select id="actual-label"><option>wing</option><option>ring</option><option>slope</option><option>unknown</option></select></label>
+        </div>
+      </article>
+    </section>
+
+    <section class="capture" aria-labelledby="capture-title">
+      <header><div><span>VIRTUAL DATASET RECORDER</span><h2 id="capture-title">Turn reviewed drawings into session-grouped data</h2><p>Choose the intended split, draw one gesture, review its raster, and add it to the current virtual session. Each label and split receives a separate session ID.</p></div><strong id="capture-summary">0 / 240 examples</strong></header>
+      <div class="capture-controls">
+        <label>Capture split<select id="capture-split"><option value="train">Training · target 40/class</option><option value="validation">Validation · target 10/class</option><option value="test">Test · target 10/class</option></select></label>
+        <button id="capture-stroke" type="button">Add reviewed stroke</button>
+        <button id="undo-capture" class="quiet" type="button" disabled>Undo last</button>
+        <button id="export-dataset" class="secondary" type="button" disabled>Export dataset JSON</button>
+      </div>
+      <div class="capture-review">
+        <label>Review or remove a saved example<select id="capture-select" disabled><option>No captured examples</option></select></label>
+        <button id="review-capture" class="quiet" type="button" disabled>Load selected</button>
+        <button id="remove-capture" class="quiet danger" type="button" disabled>Remove selected</button>
+        <button id="clear-capture" class="quiet danger" type="button" disabled>Clear saved draft</button>
+      </div>
+      <p id="capture-storage-status" class="capture-storage-status" role="status">Draft recovery is ready. Captures autosave in this browser until you export or clear them.</p>
+      <div id="capture-counts" class="capture-counts" aria-live="polite"></div>
+    </section>
+
+    <section class="evidence">
+      <header><div><span>SIMULATION EVIDENCE</span><h2>Repeatable trials</h2></div><button id="clear-trials" class="quiet" type="button">Clear trials</button></header>
+      <div class="summary"><strong id="trial-summary">No trials recorded</strong><span id="dataset-summary">Import a schema-v1 recorder dataset to run a split.</span></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Source</th><th>Actual</th><th>Prediction</th><th>Confidence</th><th>Margin</th></tr></thead><tbody id="trials"><tr><td colspan="6">Run one gesture or a dataset split to populate evidence.</td></tr></tbody></table></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.9.0/dist/tf-core.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu@4.9.0/dist/tf-backend-cpu.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.10/dist/tf-tflite.min.js" crossorigin="anonymous"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

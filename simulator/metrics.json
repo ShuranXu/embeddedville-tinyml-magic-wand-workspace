@@ -1,0 +1,76 @@
+{
+  "seed": 20261001,
+  "labels": [
+    "wing",
+    "ring",
+    "slope",
+    "unknown"
+  ],
+  "macroAccuracy": 1.0,
+  "perClassRecall": {
+    "wing": 1.0,
+    "ring": 1.0,
+    "slope": 1.0,
+    "unknown": 1.0
+  },
+  "confusionMatrix": [
+    [
+      10,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      10,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      10,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      10
+    ]
+  ],
+  "tensorMetadata": {
+    "inputShape": [
+      1,
+      32,
+      32,
+      3
+    ],
+    "inputDtype": "int8",
+    "outputShape": [
+      1,
+      4
+    ],
+    "outputDtype": "int8",
+    "inputQuantization": [
+      1.0,
+      -128
+    ],
+    "outputQuantization": [
+      0.00390625,
+      -128
+    ]
+  },
+  "operators": [
+    "CONV_2D",
+    "FULLY_CONNECTED",
+    "MEAN",
+    "SOFTMAX"
+  ],
+  "modelBytes": 31096,
+  "modelSha256": "880f1a0d392d0f4851a610e714d512c81088e2c770ce9652d44f87d2c5f5f81b",
+  "parity": {
+    "evaluatedExamples": 40,
+    "hostExportAgreement": 1.0
+  }
+}

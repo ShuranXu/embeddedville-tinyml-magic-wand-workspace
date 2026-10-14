@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EmbeddedVille Magic Wand Recorder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <header><p>EmbeddedVille · TinyML Magic Wand</p><h1>Gesture recorder</h1><p>Connect over Web Bluetooth, inspect each stroke, label it, and export a session-grouped dataset.</p></header>
+    <section class="controls">
+      <label>Board profile<select id="board"><option value="original-lsm9ds1">Original · LSM9DS1</option><option value="rev2-bmi270">Rev2 · BMI270</option></select></label>
+      <label>Label<select id="label"><option>wing</option><option>ring</option><option>slope</option><option>unknown</option></select></label>
+      <label>Split<select id="split"><option value="train">train</option><option value="validation">validation</option><option value="test">test</option></select></label>
+      <button id="connect">Connect wand</button><button id="export" class="secondary">Export JSON</button><label class="file">Import JSON<input id="import" type="file" accept="application/json"></label>
+    </section>
+    <p id="status" role="status">Use desktop Chrome or Edge over HTTPS. Data stays in this browser until export.</p>
+    <section class="workspace"><div><h2>Live stroke</h2><canvas id="live" width="420" height="420"></canvas></div><div><h2>Captured examples</h2><div id="summary"></div><div id="gallery"></div></div></section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
