@@ -1,0 +1,20 @@
+.lab-context {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 22px;
+  align-items: start;
+  margin: 18px 0;
+  padding: 22px 26px;
+  border: 1px solid #0d6373;
+  border-left: 5px solid #22bdca;
+  background: #fff;
+}
+
+.lab-context[hidden] { display: none; }
+.lab-context > span { color: #0b8797; font-size: 11px; font-weight: 850; letter-spacing: .14em; }
+.lab-context h2 { margin: 0 0 7px; color: #082943; font-size: 26px; }
+.lab-context p { margin: 0; color: #506d7a; line-height: 1.55; }
+
+@media (max-width: 720px) {
+  .lab-context { grid-template-columns: 1fr; }
+}
